@@ -1,0 +1,490 @@
+:root{
+  --bg-1: #eef2f3;
+  --bg-2: #dfe9f3;
+  --accent: #0f3d6e;
+  --muted: #6b7280;
+  --glass: rgba(255,255,255,0.65);
+  --border: rgba(10,25,40,0.08);
+}
+
+/* ================= RESET ================= */
+
+*{box-sizing:border-box;}
+html, body{
+  height:100%;
+  margin:0;
+  font-family:Inter, ui-sans-serif, system-ui, -apple-system,
+               "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+body{
+  background: linear-gradient(135deg,var(--bg-1),var(--bg-2));
+  color:#122;
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
+}
+
+/* ================= HEADER ================= */
+
+.header{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:30px 16px;
+}
+
+.hero-card{
+  background:rgba(255,255,255,0.85);
+  border-radius:20px;
+  padding:24px 20px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:10px;
+  box-shadow:0 6px 20px rgba(18,34,56,0.1);
+  backdrop-filter:blur(10px);
+}
+
+.dark-btn{
+  padding:10px 18px;
+  font-size:0.9rem;
+  border-radius:12px;
+  border:none;
+  cursor:pointer;
+}
+
+/* ================= LAYOUT ================= */
+
+.container{
+  width:100%;
+  max-width:1200px;
+  margin:18px auto;
+  padding:0 18px;
+  flex:1;
+}
+
+.controls{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  align-items:flex-start;
+  margin-bottom:18px;
+}
+
+.input, button{
+  padding:12px 14px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  font-size:0.95rem;
+}
+
+.input{
+  flex:1;
+  min-width:160px;
+}
+
+.btn{
+  background:var(--accent);
+  color:white;
+  border:none;
+  cursor:pointer;
+}
+
+.btn.ghost{
+  background:transparent;
+  color:var(--accent);
+}
+
+/* ================= INTÉRÊTS (NOUVEAU) ================= */
+
+.interest-bar{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  padding:8px;
+  background:var(--glass);
+  border-radius:14px;
+  box-shadow:0 4px 14px rgba(18,34,56,0.06);
+}
+
+.interest-btn{
+  padding:8px 14px;
+  border-radius:999px;
+  background:white;
+  border:1px solid var(--border);
+  cursor:pointer;
+  font-size:0.9rem;
+  transition:all 0.2s ease;
+}
+
+.interest-btn:hover{
+  background:rgba(15,61,110,0.06);
+}
+
+.interest-btn.active{
+  background:var(--accent);
+  color:white;
+  box-shadow:0 4px 12px rgba(15,61,110,0.35);
+}
+
+/* ================= PRÉFÉRENCES ================= */
+
+.preference-panel{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:10px 12px;
+  border-radius:14px;
+  background:var(--glass);
+  box-shadow:0 4px 14px rgba(18,34,56,0.06);
+}
+
+.preference-panel.hidden{
+  display:none;
+}
+
+.preference-option{
+  padding:6px 10px;
+  border-radius:999px;
+  background:white;
+  border:1px solid var(--border);
+  cursor:pointer;
+  font-size:0.85rem;
+}
+
+.preference-option.active{
+  background:var(--accent);
+  color:white;
+}
+
+/* ================= GRID ================= */
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr 420px;
+  gap:20px;
+}
+
+@media(max-width:1000px){
+  .grid{grid-template-columns:1fr;}
+}
+
+/* ================= CARDS ================= */
+
+.card{
+  background:var(--glass);
+  border-radius:16px;
+  padding:16px;
+  box-shadow:0 8px 30px rgba(18,34,56,0.06);
+  display:flex;
+  flex-direction:column;
+}
+
+#map{
+  width:100%;
+  height:540px;
+  border-radius:12px;
+  overflow:hidden;
+}
+
+/* ================= VILLES ================= */
+
+.sidebar-section{
+  margin-top:16px;
+}
+
+.city-list{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+
+.city-pill{
+  background:white;
+  padding:10px;
+  border-radius:10px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.city-pill.active{
+  background:linear-gradient(135deg,#0f3d6e,#2563eb);
+  color:white;
+  box-shadow:0 6px 18px rgba(15,61,110,0.35);
+}
+
+/* ================= EVENTS ================= */
+
+.event-list{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.event-card{
+  background:white;
+  border-radius:12px;
+  padding:12px;
+  display:flex;
+  gap:12px;
+  align-items:flex-start;
+  transition:transform 0.2s ease;
+}
+
+.event-card:hover{
+  transform:translateY(-4px);
+}
+
+.event-card .meta{
+  min-width:90px;
+  font-size:0.85rem;
+  color:var(--muted);
+}
+
+.event-card h3{
+  margin:0;
+  font-size:1.05rem;
+  color:var(--accent);
+}
+
+.event-card p{
+  margin:6px 0 0;
+  font-size:0.92rem;
+  color:#222;
+}
+
+.tags{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:8px;
+}
+
+.tag{
+  background:linear-gradient(90deg,#eef3ff,#fff);
+  padding:6px 8px;
+  border-radius:999px;
+  font-size:0.8rem;
+  color:var(--accent);
+  border:1px solid rgba(15,61,110,0.06);
+}
+
+/* ================= FOOTER ================= */
+
+.small{font-size:0.85rem;color:var(--muted);}
+.footer-note{text-align:center;padding:18px;color:var(--muted);}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:600px){
+  .controls{flex-direction:column;}
+  #map{height:350px;}
+}
+
+/* ================= DARK MODE ================= */
+
+body.dark{
+  background:linear-gradient(135deg,#0f172a,#1e293b);
+  color:#e2e8f0;
+}
+
+body.dark .hero-card,
+body.dark .card,
+body.dark .event-card,
+body.dark .city-pill,
+body.dark .interest-btn,
+body.dark .preference-option,
+body.dark .preference-panel{
+  background:rgba(20,25,40,0.9);
+  border:1px solid rgba(255,255,255,0.15);
+  color:#e2e8f0;
+}
+
+body.dark .interest-btn.active,
+body.dark .preference-option.active{
+  background:var(--accent);
+}
+
+body.dark #map{
+  filter:brightness(0.7);
+}
+/* =================================================
+   🌙 DARK MODE — LISIBILITÉ EVENT CARDS (FIX)
+   ================================================= */
+
+body.dark .event-card{
+  background: rgba(15,23,42,0.95); /* + contrasté */
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+body.dark .event-card h3{
+  color: #93c5fd; /* titre bien lisible */
+}
+
+body.dark .event-card p{
+  color: #e5e7eb; /* description claire */
+}
+
+body.dark .event-card .meta{
+  color: #9ca3af; /* date / ville discrètes */
+}
+
+body.dark .tags .tag{
+  background: rgba(59,130,246,0.18);
+  color: #bfdbfe;
+  border: 1px solid rgba(59,130,246,0.35);
+}
+
+body.dark .event-card a{
+  color: #60a5fa;
+  font-weight: 500;
+}
+
+body.dark .event-card:hover{
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+}
+/* ================= OPTION B — BARRES VISUELLES ================= */
+
+.city-bars{
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.city-bar{
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+}
+
+.city-bar-label{
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.city-bar-track{
+  background: rgba(15,61,110,0.08);
+  border-radius: 999px;
+  height: 10px;
+  overflow: hidden;
+}
+
+.city-bar-fill{
+  height: 100%;
+  background: linear-gradient(90deg,#0f3d6e,#2563eb);
+  border-radius: 999px;
+}
+
+/* Dark mode */
+body.dark .city-bar-track{
+  background: rgba(255,255,255,0.15);
+}
+/* ===============================
+   🎯 WHY CITY — PROGRESS BARS
+   =============================== */
+
+.why-city{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+
+.why-city h4{
+  margin:0 0 6px 0;
+  color:var(--accent);
+}
+
+.city-bar{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.city-bar-label{
+  display:flex;
+  justify-content:space-between;
+  font-size:0.85rem;
+  font-weight:500;
+}
+
+.city-bar-track{
+  width:100%;
+  height:10px;
+  background:rgba(15,61,110,0.12);
+  border-radius:999px;
+  overflow:hidden;
+}
+
+.city-bar-fill{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#2563eb,#60a5fa);
+  border-radius:999px;
+  transition:width 0.8s ease-out;
+}
+
+/* 🌙 Dark mode */
+body.dark .city-bar-track{
+  background:rgba(255,255,255,0.15);
+}
+
+body.dark .city-bar-fill{
+  background:linear-gradient(90deg,#60a5fa,#93c5fd);
+}
+/* ===============================
+   🎟️ TRANSITIONS ÉVÉNEMENTS
+   =============================== */
+
+.event-card {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.event-card.fade-out {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+.event-card.fade-in {
+  opacity: 0;
+  transform: translateY(8px);
+  animation: eventFadeIn 0.4s ease forwards;
+}
+
+@keyframes eventFadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* ===============================
+   💓 PULSE — CENTRES D’INTÉRÊT
+   =============================== */
+
+@keyframes pulseGlow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(15,61,110,0.45);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(15,61,110,0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(15,61,110,0);
+  }
+}
+
+.interest-btn.active {
+  animation: pulseGlow 1.6s ease-out infinite;
+}
+.interest-btn.active {
+  animation: pulseGlow 1.6s ease-out 1;
+}
