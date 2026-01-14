@@ -48,22 +48,22 @@ def parse_start_from_datetime(text):
 # =================================================
 
 def load_events() -> pd.DataFrame:
-    print("📂 CSV utilisé :", CSV_PATH)
-    print("📁 Fichier existe ?", os.path.exists(CSV_PATH))
+    print(" CSV utilisé :", CSV_PATH)
+    print(" Fichier existe ?", os.path.exists(CSV_PATH))
 
     if not os.path.exists(CSV_PATH):
-        print("❌ CSV introuvable")
+        print(" CSV introuvable")
         return pd.DataFrame()
 
     try:
         df = pd.read_csv(CSV_PATH)
     except Exception as e:
-        print("❌ Erreur lecture CSV :", e)
+        print(" Erreur lecture CSV :", e)
         return pd.DataFrame()
 
     required_columns = ["Category", "City", "EventName", "Description"]
     if not all(col in df.columns for col in required_columns):
-        print("❌ Colonnes requises manquantes")
+        print(" Colonnes requises manquantes")
         return pd.DataFrame()
 
     df["lat"] = pd.to_numeric(df.get("lat"), errors="coerce")
