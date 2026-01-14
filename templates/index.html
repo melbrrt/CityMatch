@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Travel Planner</title>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<header class="header">
+  <div class="hero-card">
+    <h1>City Match</h1>
+    <p>Les villes qui matchent vos envies</p>
+    <button id="dark-toggle" class="dark-btn">Mode sombre 🌙</button>
+  </div>
+</header>
+
+<main class="container">
+
+  <!-- ================= FILTRES ================= -->
+  <div class="controls">
+
+    <!-- Centres d’intérêt -->
+    <div class="interest-bar" id="interest-bar"></div>
+
+    <!-- Préférence principale -->
+    <div id="preference-panel" class="preference-panel hidden">
+      <div class="small">Préférence principale :</div>
+      <div id="preference-options"></div>
+    </div>
+
+    <!-- Recherche -->
+    <input
+      id="search-input"
+      class="input"
+      type="text"
+      placeholder="Recherche libre — ex: peinture enfant"
+    >
+
+    <input id="date-start" class="input" type="date">
+    <input id="date-end" class="input" type="date">
+
+    <button id="search-button" class="btn">
+      <i class="fa-solid fa-magnifying-glass"></i> Rechercher
+    </button>
+
+    <button id="sort-date-button" class="btn ghost">
+      <i class="fa-solid fa-calendar-days"></i> Trier
+    </button>
+  </div>
+
+  <!-- ================= CONTENU ================= -->
+  <section class="grid">
+
+    <!-- COLONNE GAUCHE -->
+    <div class="card">
+      <h2>Pourquoi cette ville ?</h2>
+
+      <!-- 🔥 UTILISÉ DIRECTEMENT PAR LE JS -->
+      <div id="why-city-panel" class="why-city small">
+        Sélectionnez une ville pour voir pourquoi elle est recommandée.
+      </div>
+
+
+      <div class="sidebar-section">
+        <h3>Villes recommandées</h3>
+        <div id="city-results-container" class="city-list small">
+          -
+        </div>
+      </div>
+    </div>
+
+    <!-- COLONNE DROITE -->
+    <aside class="card">
+      <h2>Événements</h2>
+      <div id="event-list-container" class="event-list small">
+        -
+      </div>
+    </aside>
+
+  </section>
+
+</main>
+
+<footer class="footer-note">
+  2026 · City Match
+</footer>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
