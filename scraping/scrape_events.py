@@ -14,7 +14,7 @@ from googletrans import Translator
 
 API_KEY = os.getenv("SERPAPI_API_KEY")
 if not API_KEY:
-    raise ValueError("❌ SERPAPI_API_KEY non définie")
+    raise ValueError(" SERPAPI_API_KEY non définie")
 
 # MODE TEST : True = arrêt après 1 événement
 TEST_MODE = False
@@ -164,7 +164,7 @@ with open(csv_path, "a", newline="", encoding="utf-8") as csvfile:
         types = event_types_by_lang.get(ville["hl"], [])[:TYPES_PER_CITY]
 
         for event_type in types:
-            print(f"🔍 {event_type} — {ville['name']}")
+            print(f" {event_type} — {ville['name']}")
 
             params = {
                 "engine": "google_events",
@@ -217,7 +217,7 @@ with open(csv_path, "a", newline="", encoding="utf-8") as csvfile:
                 existing_keys.add(key)
 
                 if TEST_MODE:
-                    print("🧪 TEST MODE — arrêt après 1 événement")
+                    print(" TEST MODE — arrêt après 1 événement")
                     break
 
             if TEST_MODE:
@@ -225,5 +225,5 @@ with open(csv_path, "a", newline="", encoding="utf-8") as csvfile:
         if TEST_MODE:
             break
 
-print(f"✅ Scraping terminé — données ajoutées à {OUTPUT_CSV}")
+print(f" Scraping terminé — données ajoutées à {OUTPUT_CSV}")
 
