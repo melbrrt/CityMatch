@@ -388,7 +388,7 @@ body.dark .city-bar-track{
   background: rgba(255,255,255,0.15);
 }
 /* ===============================
-   🎯 WHY CITY — PROGRESS BARS
+    WHY CITY — PROGRESS BARS
    =============================== */
 
 .why-city{
@@ -440,7 +440,7 @@ body.dark .city-bar-fill{
   background:linear-gradient(90deg,#60a5fa,#93c5fd);
 }
 /* ===============================
-   🎟️ TRANSITIONS ÉVÉNEMENTS
+    TRANSITIONS ÉVÉNEMENTS
    =============================== */
 
 .event-card {
@@ -467,7 +467,7 @@ body.dark .city-bar-fill{
   }
 }
 /* ===============================
-   💓 PULSE — CENTRES D’INTÉRÊT
+    PULSE — CENTRES D’INTÉRÊT
    =============================== */
 
 @keyframes pulseGlow {
