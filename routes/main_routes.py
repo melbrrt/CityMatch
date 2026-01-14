@@ -225,7 +225,7 @@ def smart_search():
 
 
 # =================================================
-# 🏙️ VILLES — PRIORITÉ AU COMBO COMPLET
+# VILLES — PRIORITÉ AU COMBO COMPLET
 # =================================================
 
 @bp.route("/api/cities-by-llm")
