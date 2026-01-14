@@ -1,0 +1,42 @@
+name: Update events database
+
+on:
+  schedule:
+    # Tous les 3 jours à 06:00 UTC
+    # ≈ 10 runs / mois → ≈ 120 requêtes / mois
+    - cron: "0 6 */3 * *"
+
+  workflow_dispatch:
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+
+    env:
+      SERPAPI_API_KEY: ${{ secrets.SERPAPI_API_KEY }}
+
+    steps:
+      - name:  Checkout repository
+        uses: actions/checkout@v4
+
+      - name:  Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name:  Install dependencies
+        run: |
+          pip uninstall -y serpapi || true
+          pip install -r requirements.txt
+
+      - name:  Run scraper (quota-safe)
+        run: |
+          python scraping/scrape_events.py
+
+      - name:  Commit updated CSV if changed
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add data/csv_fusionne.csv geo_cache.json || true
+          git commit -m "auto: update events data" || echo "No changes to commit"
+          git push
