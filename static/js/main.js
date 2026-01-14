@@ -251,7 +251,7 @@ document.addEventListener('DOMContentLoaded', () => {
     div.addEventListener('click', () => {
       selectedCity = c.City;
 
-      // 🔥 MET À JOUR LES COULEURS
+      //  MET À JOUR LES COULEURS
       document.querySelectorAll('.city-pill').forEach(p =>
         p.classList.remove('active')
       );
