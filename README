@@ -1,4 +1,4 @@
-CityMatch est une application web de recommandation d’événements urbains basée sur le matching sémantique entre les intérêts d’un utilisateur et des descriptions d’événements culturels.
+CityMatch est une application web de recommandation d’événements culturels basée sur le matching sémantique entre les intérêts d’un utilisateur et des descriptions d’événements culturels.
 Le projet combine NLP, web scraping, backend Flask, et automatisation afin de proposer des recommandations pertinentes et actualisées.
 
 Fonctionnalités principales
