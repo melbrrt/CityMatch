@@ -1,0 +1,13 @@
+flask
+flask-cors
+pandas
+numpy
+scikit-learn
+gunicorn
+sentence-transformers>=2.2.2
+torch>=2.0
+google-search-results
+python-dateutil
+geopy
+googletrans==4.0.0-rc1
+ 
