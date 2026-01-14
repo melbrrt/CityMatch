@@ -1,0 +1,119 @@
+CityMatch est une application web de recommandation d’événements urbains basée sur le matching sémantique entre les intérêts d’un utilisateur et des descriptions d’événements culturels.
+Le projet combine NLP, web scraping, backend Flask, et automatisation afin de proposer des recommandations pertinentes et actualisées.
+
+Fonctionnalités principales
+
+Recommandation d’événements à partir d’intérêts textuels (ex. music, art, cinema)
+
+Matching sémantique via des embeddings de phrases
+
+Normalisation automatique des catégories
+
+Interface web simple et interactive
+
+Scraping automatisé des événements
+
+Mise à jour régulière des données via GitHub Actions
+
+
+Architecture du projet
+CityMatch/
+│
+├── app.py                     # Point d’entrée Flask
+├── generate_embeddings.py     # Génération offline des embeddings
+├── requirements.txt           # Dépendances Python
+├── Procfile                   # Configuration de déploiement (gunicorn)
+│
+├── routes/
+│   └── main_routes.py         # Routes Flask et logique de matching
+│
+├── utils/
+│   └── data_utils.py          # Chargement et traitement des données
+│
+├── scraping/
+│   └── scrape_events.py       # Script de scraping des événements
+│
+├── data/
+│   ├── csv_fusionne.csv       # Données finales des événements
+│   └── embeddings.pkl         # Embeddings pré-calculés
+│
+├── templates/
+│   └── index.html             # Page principale
+│
+├── static/
+│   ├── css/
+│   │   └── style.css          # Styles
+│   └── js/
+│       └── main.js            # Logique frontend
+│
+└── .github/
+    └── workflows/
+        └── scrape_events.yml  # Automatisation du scraping
+
+Approche méthodologique
+1. Collecte des données
+
+Scraping d’événements culturels (titre, description, catégorie, date, lieu)
+
+Nettoyage et fusion des données dans un CSV unique
+
+2. Représentation sémantique
+
+Utilisation d’un modèle d’embeddings de phrases
+
+Calcul des vecteurs en amont (generate_embeddings.py)
+
+Sauvegarde des embeddings pour éviter les recalculs coûteux
+
+3. Matching utilisateur ↔ événements
+
+Encodage des intérêts utilisateur
+
+Calcul de similarité cosinus
+
+Classement des événements les plus pertinents
+
+4. Interface utilisateur
+
+Formulaire simple pour saisir ses intérêts
+
+Affichage dynamique des recommandations
+
+Technologies utilisées
+Backend
+
+Python
+
+Flask
+
+Pandas
+
+Scikit-learn
+
+Sentence-transformers
+
+Frontend
+
+HTML5
+
+CSS3
+
+JavaScript 
+
+Automatisation & Déploiement
+
+GitHub Actions
+
+Gunicorn
+
+Procfile 
+
+Automatisation du scraping
+
+Le scraping des événements est automatisé via GitHub Actions :
+
+Exécution planifiée (cron)
+
+Mise à jour régulière des données
+
+Utilisation de secrets pour les clés API si nécessaire
