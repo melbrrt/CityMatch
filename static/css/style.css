@@ -483,6 +483,15 @@ body.dark .city-bar-fill{
   animation: eventFadeIn 0.4s ease forwards;
 }
 
+.category-title{
+  margin: 14px 0 6px;
+  font-size: 0.95rem;
+  color: var(--accent);
+  border-left: 4px solid var(--accent);
+  padding-left: 8px;
+}
+
+
 @keyframes eventFadeIn {
   to {
     opacity: 1;
@@ -511,3 +520,11 @@ body.dark .city-bar-fill{
 .interest-btn.active {
   animation: pulseGlow 1.6s ease-out 1;
 }
+.pagination{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  justify-content:center;
+  margin-top:16px;
+}
+
