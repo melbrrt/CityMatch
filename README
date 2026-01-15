@@ -10,35 +10,35 @@ The application automatically collects, normalizes, and updates event data and p
 
 CityMatch/
 │
-├── app.py                     # Point d’entrée Flask
-├── requirements.txt           # Dépendances Python
-├── Procfile                   # Configuration de déploiement (gunicorn)
+├── app.py                     # Flask entry point
+├── requirements.txt           # Python dependencies
+├── Procfile                   # Deployment configuration (gunicorn)
 │
 ├── routes/
-│   └── main_routes.py         # Routes Flask et logique de matching
+│   └── main_routes.py         # Flask routes and matching logic
 │
 ├── utils/
-│   └── data_utils.py          # Chargement et traitement des données
+│   └── data_utils.py          # Data loading and processing
 │
 ├── scraping/
-│   └── scrape_events.py       # Script de scraping des événements
+│   └── scrape_events.py       # Event scraping script
 │
 ├── data/
-│   ├── csv_fusionne.csv       # Données finales des événements
-│  
+│   ├── csv_fusionne.csv       # Final event dataset
 │
 ├── templates/
-│   └── index.html             # Page principale
+│   └── index.html             # Main page
 │
 ├── static/
 │   ├── css/
 │   │   └── style.css          # Styles
 │   └── js/
-│       └── main.js            # Logique frontend
+│       └── main.js            # Frontend logic
 │
 └── .github/
     └── workflows/
-        └── scrape_events.yml  # Automatisation du scraping
+        └── scrape_events.yml  # Scraping automation
+
 
 Data collection
 
