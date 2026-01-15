@@ -2,8 +2,8 @@ name: Update events database
 
 on:
   schedule:
-    # Tous les 3 jours à 06:00 UTC
-    # ≈ 10 runs / jours → ≈ 100 requêtes / mois
+# Every 3 days at 06:00 UTC
+# ≈ 10 runs / month → ≈ 100 requests / month
     - cron: "0 6 */3 * *"
 
   workflow_dispatch:
