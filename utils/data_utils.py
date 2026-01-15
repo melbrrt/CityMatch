@@ -4,7 +4,7 @@ import re
 import os
 
 # =================================================
-# CONFIGURATION DES CHEMINS (SOURCE DE VÉRITÉ)
+# CONFIGURATION PATH
 # =================================================
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -12,7 +12,7 @@ CSV_PATH = os.path.join(BASE_DIR, "..", "data", "csv_fusionne.csv")
 
 
 # =================================================
-# NORMALISATION TEXTE
+# TEXT NORMALIZATION
 # =================================================
 
 def normalize_text(value) -> str:
@@ -29,7 +29,7 @@ def normalize_text(value) -> str:
 
 
 # =================================================
-# PARSING DES DATES
+# PARSING 
 # =================================================
 
 def parse_start_from_datetime(text):
@@ -44,7 +44,7 @@ def parse_start_from_datetime(text):
 
 
 # =================================================
-# CHARGEMENT DES ÉVÉNEMENTS
+# LOAD EVENTS
 # =================================================
 
 def load_events() -> pd.DataFrame:
@@ -97,7 +97,7 @@ def load_events() -> pd.DataFrame:
 
 
 # =================================================
-# FILTRAGE PAR CATÉGORIE / INTÉRÊTS
+# FILTER BY CATEGORY
 # =================================================
 
 def filter_by_category(df: pd.DataFrame, interests_param: str) -> pd.DataFrame:
@@ -130,7 +130,7 @@ def filter_by_category(df: pd.DataFrame, interests_param: str) -> pd.DataFrame:
 
 
 # =================================================
-# FILTRAGE PAR DATE (SANS EXCLUSION AUTOMATIQUE)
+# FILTER BY DATE
 # =================================================
 
 def filter_by_date(df: pd.DataFrame, start=None, end=None) -> pd.DataFrame:
