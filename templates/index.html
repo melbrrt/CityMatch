@@ -21,19 +21,19 @@
 
 <main class="container">
 
-  <!-- ================= FILTRES ================= -->
+  <!-- ================= FILTERS ================= -->
   <div class="controls">
 
-    <!-- Centres d’intérêt -->
+    <!-- INTERESTS -->
     <div class="interest-bar" id="interest-bar"></div>
 
-    <!-- Préférence principale -->
+    <!-- MAIN PREFERENCE -->
     <div id="preference-panel" class="preference-panel hidden">
       <div class="small">Préférence principale :</div>
       <div id="preference-options"></div>
     </div>
 
-    <!-- Recherche -->
+    <!-- SEARCH -->
     <input
       id="search-input"
       class="input"
@@ -53,10 +53,10 @@
     </button>
   </div>
 
-  <!-- ================= CONTENU ================= -->
+  <!-- ================= CONTENT ================= -->
   <section class="grid">
 
-    <!-- COLONNE GAUCHE -->
+    <!-- LEFT CARD -->
     <div class="card">
       <h2>Pourquoi cette ville ?</h2>
 
@@ -74,7 +74,7 @@
       </div>
     </div>
 
-    <!-- COLONNE DROITE -->
+    <!-- RIGHT CARD -->
     <aside class="card">
       <h2>Événements</h2>
       <div id="event-list-container" class="event-list small">
@@ -93,4 +93,5 @@
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>
+
 
