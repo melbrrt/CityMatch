@@ -1,7 +1,7 @@
 CityMatch is a web application for searching and filtering urban cultural events using automatically collected data from public sources.
 The project focuses on building a complete data pipeline, from automated event collection to a user-facing web interface.
 
-Live demo : 
+Live demo : https://citymatch.onrender.com/
 
 Features
 CityMatch allows users to explore cultural events across multiple European cities by filtering events according to personal interests, location, date, and free-text keywords.
