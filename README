@@ -1,19 +1,94 @@
-CityMatch est une application web de recommandation d’événements culturels basée sur le matching sémantique entre les intérêts d’un utilisateur et des descriptions d’événements culturels.
-Le projet combine NLP, web scraping, backend Flask, et automatisation afin de proposer des recommandations pertinentes et actualisées.
+FICHE DE PROJET — CityMatch
 
-Fonctionnalités principales
+CityMatch
+Application web de recherche et de filtrage d’événements culturels urbains à partir de données collectées automatiquement.
 
-Recommandation d’événements à partir d’intérêts textuels (ex. music, art, cinema)
+Contexte et motivation
+Les grandes villes européennes proposent une offre culturelle abondante et hétérogène (concerts, expositions, marchés, festivals, etc.).
+Cependant, l’information est dispersée, multilingue et difficile à filtrer de manière cohérente. J’ai constaté que planifier un voyage selon ses goûts personnels est souvent difficile. Les applications existantes, comme TripAdvisor ou Eventbrite, permettent de rechercher des événements ou lieux mais ne proposent pas de recommandations personnalisées. Mon projet simplifie cette découverte, optimise les séjours selon les centres d’intérêts et offre une interface intuitive et visuelle.
+Ce projet vise à :
+-centraliser des événements culturels provenant de sources publiques,
+-les structurer dans une base homogène,
+-proposer une interface web permettant une recherche flexible et multi-critères.
+Le projet s’inscrit dans une logique de pipeline de données complet, allant de la collecte automatisée à l’affichage utilisateur.
 
-Matching sémantique via des embeddings de phrases
+Objectifs du projet
+Objectif principal
+Mettre à disposition une application web permettant de rechercher et filtrer des événements culturels dans plusieurs villes européennes.
+Objectifs secondaires
+-Automatiser la collecte des données
+-Gérer des données multilingues
+-Normaliser catégories et dates
+-Proposer une recherche combinant filtres explicites et recherche libre
+-Garantir la reproductibilité et la maintenabilité du projet
 
-Normalisation automatique des catégories
+Périmètre fonctionnel
+Fonctionnalités implémentées
+-Scraping automatique d’événements culturels
+-Traduction des contenus vers une langue commune
+-Géolocalisation des lieux
+-Filtrage par :
+-centres d’intérêt pondérés,
+-ville,
+-date,
+-recherche libre par mots-clés
+-Classement des résultats selon des scores explicites
+       -Interface web interactive
+-Automatisation via CI/CD
 
-Interface web simple et interactive
+Collecte et mise à jour des données
+Sources globales J’ai utilisé l’API Ticketmaster pour récupérer concerts, sports et événements majeurs dans plusieurs pays. J’ai récupéré les titres, descriptions, dates et lieux, et sauvegardé les résultats 
+Sources locales Pour les événements locaux (expositions, marchés, festivals), j’ai utilisé SerpApi / Google Events. Le script Python extrait le nom, la date, le lieu, l’adresse, le lien et la description des événements
+L’API Ticketmaster a été utilisée en amont du projet afin de constituer une base initiale riche en événements de grande ampleur Justification du choix
+Les événements proposés par Ticketmaster sont généralement : planifiés longtemps à l’avance, relativement stables dans le temps (peu de modifications fréquentes), distribués à grande échelle (tournées, compétitions, grands festivals).
+Ainsi, un scraping ou une interrogation continue de l’API Ticketmaster n’était pas nécessaire pour garantir la fraîcheur des données, en particulier pour les concerts, dont les informations restent valides sur de longues périodes.
+Automatisation (CI/CD)
+-Un workflow GitHub Actions (.github/workflows/scrape_events.yml)
+-Exécution tous les 3 jours ou manuellement
+-Environnement Linux éphémère
+-Gestion sécurisée des clés API
+Données collectées
+-Nom de l’événement
+-Catégorie
+-Description
+-Dates structurées
+-Ville
+-Lieu
+-Coordonnées géographiques
+-Liens externes
+Les données sont stockées dans un CSV unique
 
-Scraping automatisé des événements
+Script de scraping (scraping/scrape_events.py)
+Ce script :interroge Google Events via SerpApi, adapte les requêtes selon la langue et le pays, traduit les contenus vers le français, géolocalise les lieux, évite les doublons, enrichit les métadonnées, écrit les résultats dans le CSV principal.
 
-Mise à jour régulière des données via GitHub Actions
+Gestion et préparation des données (utils/data_utils.py)
+Ce module :charge le CSV principal, normalise les chaînes de caractères, parse et reconstruit les dates, applique les filtres par catégorie et par date, ajoute des scores explicites (interest_score).
+Il garantit que les données envoyées à l’API sont propres, cohérentes et exploitables.
+
+
+Backend et logique métier (routes/main_routes.py)
+Ce fichier : définit les routes API Flask, orchestre les requêtes utilisateur, applique les filtres combinés, normalise les catégories multilingues, calcule des scores de pertinence basés sur des règles explicites, prépare les données pour l’affichage frontend.
+Les routes principales incluent : récupération des catégories disponibles, recherche avancée d’événements et agrégation des événements par ville.
+
+Interface utilisateur
+L’interface web permet la saisie des critères utilisateur, interagit avec l’API via JavaScript, affiche dynamiquement les résultats, repose sur des technologies web simples et lisibles.
+
+Limites du projet
+Dépendance à la structure des sources externes
+Pas de base de données persistante
+Recommandation non sémantique en production
+
+Perspectives d’évolution
+Intégration d’un moteur de similarité vectorielle
+Internationalisation complète
+Amélioration du scoring de pertinence
+
+Conclusion
+CityMatch est un projet complet de pipeline de données appliqué à la culture urbaine.
+Il démontre la capacité à collecter et structurer des données réelles, automatiser leur mise à jour, concevoir une API fonctionnelle et proposer une interface exploitable.
+Le projet privilégie des choix clairs, interprétables et maintenables, tout en laissant la porte ouverte à des évolutions plus avancées.
+
+
 
 
 Architecture du projet
@@ -50,70 +125,3 @@ CityMatch/
     └── workflows/
         └── scrape_events.yml  # Automatisation du scraping
 
-Approche méthodologique
-1. Collecte des données
-
-Scraping d’événements culturels (titre, description, catégorie, date, lieu)
-
-Nettoyage et fusion des données dans un CSV unique
-
-2. Représentation sémantique
-
-Utilisation d’un modèle d’embeddings de phrases
-
-Calcul des vecteurs en amont (generate_embeddings.py)
-
-Sauvegarde des embeddings pour éviter les recalculs coûteux
-
-3. Matching utilisateur ↔ événements
-
-Encodage des intérêts utilisateur
-
-Calcul de similarité cosinus
-
-Classement des événements les plus pertinents
-
-4. Interface utilisateur
-
-Formulaire simple pour saisir ses intérêts
-
-Affichage dynamique des recommandations
-
-Technologies utilisées
-Backend
-
-Python
-
-Flask
-
-Pandas
-
-Scikit-learn
-
-Sentence-transformers
-
-Frontend
-
-HTML5
-
-CSS3
-
-JavaScript 
-
-Automatisation & Déploiement
-
-GitHub Actions
-
-Gunicorn
-
-Procfile 
-
-Automatisation du scraping
-
-Le scraping des événements est automatisé via GitHub Actions :
-
-Exécution planifiée (cron)
-
-Mise à jour régulière des données
-
-Utilisation de secrets pour les clés API si nécessaire
