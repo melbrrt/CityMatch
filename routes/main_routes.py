@@ -10,7 +10,7 @@ import re
 
 
 # =================================================
-# NORMALISATION DES CATÉGORIES
+# NORMALIZATION 
 # =================================================
 
 CATEGORY_TRANSLATIONS = {
@@ -105,13 +105,13 @@ def apply_filters(df, args):
     end_date = args.get("end_date", "")
 
     # -----------------------------
-    # Centres d’intérêt (pondérés)
+    # Weighted interests
     # -----------------------------
     if interests:
         df = filter_by_category(df, interests)
 
     # -----------------------------
-    # Ville
+    # City
     # -----------------------------
     if city and "City" in df.columns:
         df = df[
@@ -121,8 +121,9 @@ def apply_filters(df, args):
         ]
 
     # -----------------------------
-    # Recherche libre multi-mots
-    # OR par défaut, AND favorisé
+    # Multi-word free-text search
+    # OR by default, AND favored
+
     # -----------------------------
     if query:
         keywords = [k for k in query.split() if len(k) > 1]
@@ -198,7 +199,7 @@ def smart_search():
         df.loc[mask, "Source"] = "Billetterie disponible sur Ticketmaster"
 
     # -----------------------------
-    # TRI FINAL (pertinence)
+    # Final ranking (relevance)
     # -----------------------------
     sort_cols = []
 
@@ -225,7 +226,7 @@ def smart_search():
 
 
 # =================================================
-# VILLES — PRIORITÉ AU COMBO COMPLET
+# Cities — priority to full combination coverage
 # =================================================
 
 @bp.route("/api/cities-by-llm")
@@ -240,7 +241,7 @@ def cities_by_llm():
     df = df[df["City"] != ""]
 
     # -----------------------------
-    # Intérêts demandés
+    # Requested interests
     # -----------------------------
     interests_param = request.args.get("interests", "")
     requested_interests = {
@@ -250,7 +251,7 @@ def cities_by_llm():
     }
 
     # -----------------------------
-    # Normalisation catégories
+    # Category normalization
     # -----------------------------
     df["_cat_norm"] = df["Category"].apply(
         lambda x: normalize_text(x) if isinstance(x, str) else ""
