@@ -26,6 +26,9 @@ document.addEventListener('DOMContentLoaded', () => {
   let sortByDate = false;
   let lastEvents = [];
 
+  let currentPage = 1;
+  const EVENTS_PER_PAGE = 10;
+
   // ================= DARK MODE =================
   darkToggle.addEventListener('click', () => {
     document.body.classList.toggle('dark');
@@ -142,6 +145,58 @@ document.addEventListener('DOMContentLoaded', () => {
     return card;
   }
 
+  // ================= PAGINATION =================
+  function renderPaginatedEvents(events) {
+    eventListContainer.innerHTML = '';
+
+    const start = (currentPage - 1) * EVENTS_PER_PAGE;
+    const end = start + EVENTS_PER_PAGE;
+    const pageEvents = events.slice(start, end);
+
+    pageEvents.forEach(ev => {
+      const card = createEventCard(ev);
+      card.classList.add('fade-in');
+      eventListContainer.appendChild(card);
+    });
+
+    renderPaginationControls(events.length);
+  }
+
+  function renderPaginationControls(total) {
+    const totalPages = Math.ceil(total / EVENTS_PER_PAGE);
+    if (totalPages <= 1) return;
+
+    const nav = document.createElement('div');
+    nav.className = 'pagination';
+
+    const prev = document.createElement('button');
+    prev.textContent = '← Previous';
+    prev.className = 'btn ghost';
+    prev.disabled = currentPage === 1;
+
+    const next = document.createElement('button');
+    next.textContent = 'Next →';
+    next.className = 'btn ghost';
+    next.disabled = currentPage === totalPages;
+
+    const info = document.createElement('span');
+    info.className = 'small';
+    info.textContent = `Page ${currentPage} / ${totalPages}`;
+
+    prev.onclick = () => {
+      currentPage--;
+      renderPaginatedEvents(lastEvents);
+    };
+
+    next.onclick = () => {
+      currentPage++;
+      renderPaginatedEvents(lastEvents);
+    };
+
+    nav.append(prev, info, next);
+    eventListContainer.appendChild(nav);
+  }
+
   // ================= WHY CITY (BARS) =================
   function renderWhyCity(cityName) {
     const cityEvents = lastEvents.filter(e => e.City === cityName);
@@ -190,79 +245,74 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ================= SEARCH =================
   function searchEvents() {
-  // Fade-out des cartes existantes
-  const existingCards = eventListContainer.querySelectorAll('.event-card');
-  existingCards.forEach(card => card.classList.add('fade-out'));
+    const existingCards = eventListContainer.querySelectorAll('.event-card');
+    existingCards.forEach(card => card.classList.add('fade-out'));
 
-  // Petit délai pour laisser l’animation se faire
-  setTimeout(() => {
-    eventListContainer.innerHTML = '<div class="small">Chargement…</div>';
-    cityResultsContainer.innerHTML = '<div class="small">Chargement…</div>';
+    setTimeout(() => {
+      eventListContainer.innerHTML = '<div class="small">Chargement…</div>';
+      cityResultsContainer.innerHTML = '<div class="small">Chargement…</div>';
 
-    fetch(`/api/smart-search?${buildQueryParams(true)}`)
-      .then(res => res.json())
-      .then(events => {
-        lastEvents = events;
-        eventListContainer.innerHTML = '';
+      fetch(`/api/smart-search?${buildQueryParams(true)}`)
+        .then(res => res.json())
+        .then(events => {
+          lastEvents = events;
+          currentPage = 1;
 
-        if (!events.length) {
-          eventListContainer.innerHTML =
-            '<div class="small">Aucun événement trouvé.</div>';
-          return;
-        }
+          const counter = document.getElementById('event-count');
+          counter.textContent = `${events.length} résultat${events.length > 1 ? 's' : ''}`;
 
-        events.slice(0, 60).forEach(ev => {
-          const card = createEventCard(ev);
-          card.classList.add('fade-in');
-          eventListContainer.appendChild(card);
+          if (!events.length) {
+            eventListContainer.innerHTML =
+              '<div class="small">Aucun événement trouvé.</div>';
+            return;
+          }
+
+          renderPaginatedEvents(events);
         });
-      });
 
-    fetch(`/api/cities-by-llm?${buildQueryParams(false)}`)
-      .then(res => res.json())
-      .then(renderCities);
+      fetch(`/api/cities-by-llm?${buildQueryParams(false)}`)
+        .then(res => res.json())
+        .then(renderCities);
 
-  }, 200);
-}
-
+    }, 200);
+  }
 
   // ================= CITIES =================
   function renderCities(cities) {
-  cityResultsContainer.innerHTML = '';
+    cityResultsContainer.innerHTML = '';
 
-  if (!cities.length) {
-    cityResultsContainer.innerHTML = '<div class="small">-</div>';
-    return;
-  }
-
-  cities.slice(0, 8).forEach(c => {
-    const div = document.createElement('div');
-    div.className = 'city-pill';
-
-    if (selectedCity === c.City) {
-      div.classList.add('active');
+    if (!cities.length) {
+      cityResultsContainer.innerHTML = '<div class="small">-</div>';
+      return;
     }
 
-    div.innerHTML = `
-      <span>${c.City}</span>
-      <span class="small">${c.count}</span>
-    `;
+    cities.slice(0, 8).forEach(c => {
+      const div = document.createElement('div');
+      div.className = 'city-pill';
 
-    div.addEventListener('click', () => {
-      selectedCity = c.City;
+      if (selectedCity === c.City) {
+        div.classList.add('active');
+      }
 
-      //  COLOURS
-      document.querySelectorAll('.city-pill').forEach(p =>
-        p.classList.remove('active')
-      );
-      div.classList.add('active');
+      div.innerHTML = `
+        <span>${c.City}</span>
+        <span class="small">${c.count}</span>
+      `;
 
-      renderWhyCity(c.City);
+      div.addEventListener('click', () => {
+        selectedCity = c.City;
+
+        document.querySelectorAll('.city-pill').forEach(p =>
+          p.classList.remove('active')
+        );
+        div.classList.add('active');
+
+        renderWhyCity(c.City);
+      });
+
+      cityResultsContainer.appendChild(div);
     });
-
-    cityResultsContainer.appendChild(div);
-  });
-}
+  }
 
   // ================= INIT =================
   searchButton.addEventListener('click', searchEvents);
