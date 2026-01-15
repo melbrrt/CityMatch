@@ -162,9 +162,10 @@ body{
 
 .grid{
   display:grid;
-  grid-template-columns:1fr 420px;
-  gap:20px;
+  grid-template-columns: 1.2fr 1fr;
+  gap:24px;
 }
+
 
 @media(max-width:1000px){
   .grid{grid-template-columns:1fr;}
@@ -257,11 +258,33 @@ body{
   color:#222;
 }
 
+.event-list{
+  max-height: 600px;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+.event-list::-webkit-scrollbar{
+  width:6px;
+}
+
+.event-list::-webkit-scrollbar-thumb{
+  background: rgba(15,61,110,0.25);
+  border-radius: 6px;
+}
+
 .tags{
   display:flex;
   gap:8px;
   flex-wrap:wrap;
   margin-top:8px;
+}
+.results-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:10px;
+  font-weight:500;
 }
 
 .tag{
