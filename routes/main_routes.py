@@ -10,6 +10,13 @@ import re
 
 
 # =================================================
+# LOAD DATA ONCE (CACHE GLOBAL)
+# =================================================
+
+EVENTS_DF = load_events()
+
+
+# =================================================
 # NORMALIZATION 
 # =================================================
 
@@ -122,8 +129,6 @@ def apply_filters(df, args):
 
     # -----------------------------
     # Multi-word free-text search
-    # OR by default, AND favored
-
     # -----------------------------
     if query:
         keywords = [k for k in query.split() if len(k) > 1]
@@ -138,7 +143,6 @@ def apply_filters(df, args):
             if matches == 0:
                 return 0
 
-            # AND → bonus
             if matches == len(keywords):
                 return matches + 2
 
@@ -166,7 +170,7 @@ def index():
 
 @bp.route("/api/categories")
 def api_categories():
-    df = load_events()
+    df = EVENTS_DF
     if df.empty or "Category" not in df.columns:
         return jsonify([])
 
@@ -181,7 +185,7 @@ def api_categories():
 
 @bp.route("/api/smart-search")
 def smart_search():
-    df = load_events()
+    df = EVENTS_DF
     if df.empty:
         return jsonify([])
 
@@ -225,13 +229,9 @@ def smart_search():
     return jsonify(df.to_dict(orient="records"))
 
 
-# =================================================
-# Cities — priority to full combination coverage
-# =================================================
-
 @bp.route("/api/cities-by-llm")
 def cities_by_llm():
-    df = load_events()
+    df = EVENTS_DF
     if df.empty or "City" not in df.columns:
         return jsonify([])
 
@@ -240,9 +240,6 @@ def cities_by_llm():
     df["City"] = df["City"].astype(str).str.strip()
     df = df[df["City"] != ""]
 
-    # -----------------------------
-    # Requested interests
-    # -----------------------------
     interests_param = request.args.get("interests", "")
     requested_interests = {
         part.split(":")[0]
@@ -250,9 +247,6 @@ def cities_by_llm():
         if ":" in part
     }
 
-    # -----------------------------
-    # Category normalization
-    # -----------------------------
     df["_cat_norm"] = df["Category"].apply(
         lambda x: normalize_text(x) if isinstance(x, str) else ""
     )
@@ -280,3 +274,4 @@ def cities_by_llm():
     )
 
     return jsonify(city_df.to_dict(orient="records"))
+
