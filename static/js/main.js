@@ -34,14 +34,14 @@ document.addEventListener('DOMContentLoaded', () => {
       : 'Mode sombre 🌙';
   });
 
-  // ================= TRI =================
+  // ================= SORT =================
   sortButton.addEventListener('click', () => {
     sortByDate = !sortByDate;
     sortButton.textContent = sortByDate ? 'Trier : Date ↑' : 'Trier';
     searchEvents();
   });
 
-  // ================= INTÉRÊTS =================
+  // ================= INTERESTS =================
   fetch('/api/categories')
     .then(res => res.json())
     .then(categories => {
@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-  // ================= PRÉFÉRENCE =================
+  // ================= PREFERENCE =================
   function updatePreferencePanel() {
     preferenceOptions.innerHTML = '';
 
@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return card;
   }
 
-  // ================= WHY CITY (BARRES) =================
+  // ================= WHY CITY (BARS) =================
   function renderWhyCity(cityName) {
     const cityEvents = lastEvents.filter(e => e.City === cityName);
 
@@ -251,7 +251,7 @@ document.addEventListener('DOMContentLoaded', () => {
     div.addEventListener('click', () => {
       selectedCity = c.City;
 
-      //  MET À JOUR LES COULEURS
+      //  COLOURS
       document.querySelectorAll('.city-pill').forEach(p =>
         p.classList.remove('active')
       );
