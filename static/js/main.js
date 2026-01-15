@@ -146,6 +146,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ================= PAGINATION =================
+  function getVisibleEvents() {
+    if (!selectedCity) return lastEvents;
+    return lastEvents.filter(e => e.City === selectedCity);
+  }
+
   function renderPaginatedEvents(events) {
     eventListContainer.innerHTML = '';
 
@@ -185,12 +190,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     prev.onclick = () => {
       currentPage--;
-      renderPaginatedEvents(lastEvents);
+      renderPaginatedEvents(getVisibleEvents());
     };
 
     next.onclick = () => {
       currentPage++;
-      renderPaginatedEvents(lastEvents);
+      renderPaginatedEvents(getVisibleEvents());
     };
 
     nav.append(prev, info, next);
@@ -267,7 +272,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
           }
 
-          renderPaginatedEvents(events);
+          renderPaginatedEvents(getVisibleEvents());
         });
 
       fetch(`/api/cities-by-llm?${buildQueryParams(false)}`)
@@ -308,6 +313,8 @@ document.addEventListener('DOMContentLoaded', () => {
         div.classList.add('active');
 
         renderWhyCity(c.City);
+        currentPage = 1;
+        renderPaginatedEvents(getVisibleEvents());
       });
 
       cityResultsContainer.appendChild(div);
