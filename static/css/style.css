@@ -96,7 +96,7 @@ body{
   color:var(--accent);
 }
 
-/* ================= INTÉRÊTS (NOUVEAU) ================= */
+/* ================= INTERESTS ================= */
 
 .interest-bar{
   display:flex;
@@ -128,7 +128,7 @@ body{
   box-shadow:0 4px 12px rgba(15,61,110,0.35);
 }
 
-/* ================= PRÉFÉRENCES ================= */
+/* ================= PREFERENCES ================= */
 
 .preference-panel{
   display:flex;
@@ -188,7 +188,7 @@ body{
   overflow:hidden;
 }
 
-/* ================= VILLES ================= */
+/* ================= CITIES ================= */
 
 .sidebar-section{
   margin-top:16px;
@@ -313,7 +313,7 @@ body.dark #map{
   filter:brightness(0.7);
 }
 /* =================================================
-   🌙 DARK MODE — LISIBILITÉ EVENT CARDS (FIX)
+   🌙 DARK MODE — EVENT CARDS (FIX)
    ================================================= */
 
 body.dark .event-card{
@@ -348,7 +348,7 @@ body.dark .event-card:hover{
   transform: translateY(-4px);
   box-shadow: 0 10px 30px rgba(0,0,0,0.6);
 }
-/* ================= OPTION B — BARRES VISUELLES ================= */
+/* ================= BARS ================= */
 
 .city-bars{
   margin-top: 12px;
@@ -440,7 +440,7 @@ body.dark .city-bar-fill{
   background:linear-gradient(90deg,#60a5fa,#93c5fd);
 }
 /* ===============================
-    TRANSITIONS ÉVÉNEMENTS
+    TRANSITIONS 
    =============================== */
 
 .event-card {
@@ -467,7 +467,7 @@ body.dark .city-bar-fill{
   }
 }
 /* ===============================
-    PULSE — CENTRES D’INTÉRÊT
+    PULSE
    =============================== */
 
 @keyframes pulseGlow {
