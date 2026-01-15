@@ -95,7 +95,6 @@ Architecture du projet
 CityMatch/
 │
 ├── app.py                     # Point d’entrée Flask
-├── generate_embeddings.py     # Génération offline des embeddings
 ├── requirements.txt           # Dépendances Python
 ├── Procfile                   # Configuration de déploiement (gunicorn)
 │
@@ -110,7 +109,7 @@ CityMatch/
 │
 ├── data/
 │   ├── csv_fusionne.csv       # Données finales des événements
-│   └── embeddings.pkl         # Embeddings pré-calculés
+│  
 │
 ├── templates/
 │   └── index.html             # Page principale
