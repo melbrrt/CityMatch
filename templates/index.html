@@ -58,12 +58,7 @@
 
     <!-- LEFT CARD -->
     <div class="card">
-      <h2>Pourquoi cette ville ?</h2>
 
-      
-      <div id="why-city-panel" class="why-city small">
-        Sélectionnez une ville pour voir pourquoi elle est recommandée.
-      </div>
 
 
       <div class="sidebar-section">
@@ -71,15 +66,26 @@
         <div id="city-results-container" class="city-list small">
           -
         </div>
+              <h2>Pourquoi cette ville ?</h2>
+
+      
+      <div id="why-city-panel" class="why-city small">
+        Sélectionnez une ville pour voir pourquoi elle est recommandée.
+      </div>
       </div>
     </div>
 
     <!-- RIGHT CARD -->
     <aside class="card">
       <h2>Événements</h2>
-      <div id="event-list-container" class="event-list small">
-        -
+      <div class="results-header small">
+        <span id="event-count">0 résultats</span>
       </div>
+
+<div id="event-list-container" class="event-list">
+  -
+</div>
+
     </aside>
 
   </section>
@@ -93,5 +99,6 @@
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>
+
 
 
