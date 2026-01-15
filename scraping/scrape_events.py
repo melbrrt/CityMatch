@@ -26,7 +26,7 @@ OUTPUT_CSV = "data/csv_fusionne.csv"
 GEO_CACHE_FILE = "geo_cache.json"
 
 # =====================================================
-# DONNÉES
+# DATA
 # =====================================================
 
 villes = [
@@ -72,7 +72,7 @@ event_types_by_lang = {
 }
 
 # =====================================================
-# INIT OUTILS
+# TOOLS INITIALIZATION
 # =====================================================
 
 translator = Translator()
@@ -126,7 +126,7 @@ def parse_date_range(date_str):
         return None, None, None
 
 # =====================================================
-# CHARGEMENT DES DOUBLONS EXISTANTS
+# LOADING EXISTING DUPLICATES
 # =====================================================
 
 existing_keys = set()
@@ -144,7 +144,7 @@ if csv_path.exists():
             existing_keys.add(key)
 
 # =====================================================
-# ÉCRITURE (APPEND)
+# WRITING (APPEND)
 # =====================================================
 
 os.makedirs("data", exist_ok=True)
