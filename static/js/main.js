@@ -4,6 +4,22 @@ document.addEventListener('DOMContentLoaded', () => {
   const normalize = s =>
     s ? s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase() : '';
 
+
+  const parseDateSafe = value => {
+    if (!value || typeof value !== 'string') return null;
+
+    let v = value.trim();
+
+
+    if (v.includes('.')) v = v.split('.')[0];
+
+
+    if (v.includes(' ')) v = v.replace(' ', 'T');
+
+    const d = new Date(v);
+    return isNaN(d.getTime()) ? null : d;
+  };
+
   // ================= DOM =================
   const interestBar = document.getElementById('interest-bar');
   const preferencePanel = document.getElementById('preference-panel');
@@ -123,22 +139,32 @@ document.addEventListener('DOMContentLoaded', () => {
     const card = document.createElement('div');
     card.className = 'event-card';
 
+    const dateObj = parseDateSafe(e.DateTime_start);
+    const dateLabel = dateObj
+      ? dateObj.toLocaleDateString('fr-FR')
+      : 'Date inconnue';
+
     card.innerHTML = `
       <div class="meta">
-        <div class="small">
-          ${e.DateTime_start ? new Date(e.DateTime_start).toLocaleDateString('fr-FR') : 'N/A'}
-        </div>
+        <div class="small">${dateLabel}</div>
         <div class="small">${e.City || ''}</div>
       </div>
 
       <div style="flex:1">
         <h3>${e.EventName || 'Sans titre'}</h3>
-        <p>${e.Description ? e.Description.slice(0, 180) + '…' : 'Pas de description.'}</p>
+        <p>${e.Description
+          ? e.Description.slice(0, 180) + '…'
+          : 'Pas de description.'}</p>
 
-        ${e.Category ? `<div class="tags"><span class="tag">${e.Category}</span></div>` : ''}
+        ${e.Category
+          ? `<div class="tags"><span class="tag">${e.Category}</span></div>`
+          : ''}
+
         ${e.Link
           ? `<a class="small" href="${e.Link}" target="_blank">Voir la source ↗</a>`
-          : e.Source ? `<div class="small muted">${e.Source}</div>` : ''}
+          : e.Source
+            ? `<div class="small muted">${e.Source}</div>`
+            : ''}
       </div>
     `;
 
@@ -156,9 +182,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const start = (currentPage - 1) * EVENTS_PER_PAGE;
     const end = start + EVENTS_PER_PAGE;
-    const pageEvents = events.slice(start, end);
 
-    pageEvents.forEach(ev => {
+    events.slice(start, end).forEach(ev => {
       const card = createEventCard(ev);
       card.classList.add('fade-in');
       eventListContainer.appendChild(card);
@@ -202,7 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
     eventListContainer.appendChild(nav);
   }
 
-  // ================= WHY CITY (BARS) =================
+  // ================= WHY CITY =================
   function renderWhyCity(cityName) {
     const cityEvents = lastEvents.filter(e => e.City === cityName);
 
@@ -250,36 +275,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ================= SEARCH =================
   function searchEvents() {
-    const existingCards = eventListContainer.querySelectorAll('.event-card');
-    existingCards.forEach(card => card.classList.add('fade-out'));
+    eventListContainer.innerHTML = '<div class="small">Chargement…</div>';
+    cityResultsContainer.innerHTML = '<div class="small">Chargement…</div>';
 
-    setTimeout(() => {
-      eventListContainer.innerHTML = '<div class="small">Chargement…</div>';
-      cityResultsContainer.innerHTML = '<div class="small">Chargement…</div>';
+    fetch(`/api/smart-search?${buildQueryParams(true)}`)
+      .then(res => res.json())
+      .then(events => {
+        lastEvents = events;
+        currentPage = 1;
 
-      fetch(`/api/smart-search?${buildQueryParams(true)}`)
-        .then(res => res.json())
-        .then(events => {
-          lastEvents = events;
-          currentPage = 1;
+        const counter = document.getElementById('event-count');
+        counter.textContent = `${events.length} résultat${events.length > 1 ? 's' : ''}`;
 
-          const counter = document.getElementById('event-count');
-          counter.textContent = `${events.length} résultat${events.length > 1 ? 's' : ''}`;
+        if (!events.length) {
+          eventListContainer.innerHTML =
+            '<div class="small">Aucun événement trouvé.</div>';
+          return;
+        }
 
-          if (!events.length) {
-            eventListContainer.innerHTML =
-              '<div class="small">Aucun événement trouvé.</div>';
-            return;
-          }
+        renderPaginatedEvents(getVisibleEvents());
+      });
 
-          renderPaginatedEvents(getVisibleEvents());
-        });
-
-      fetch(`/api/cities-by-llm?${buildQueryParams(false)}`)
-        .then(res => res.json())
-        .then(renderCities);
-
-    }, 200);
+    fetch(`/api/cities-by-llm?${buildQueryParams(false)}`)
+      .then(res => res.json())
+      .then(renderCities);
   }
 
   // ================= CITIES =================
@@ -295,9 +314,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const div = document.createElement('div');
       div.className = 'city-pill';
 
-      if (selectedCity === c.City) {
-        div.classList.add('active');
-      }
+      if (selectedCity === c.City) div.classList.add('active');
 
       div.innerHTML = `
         <span>${c.City}</span>
@@ -320,6 +337,13 @@ document.addEventListener('DOMContentLoaded', () => {
       cityResultsContainer.appendChild(div);
     });
   }
+
+  // ================= INIT =================
+  searchButton.addEventListener('click', searchEvents);
+  searchInput.addEventListener('keydown', e => e.key === 'Enter' && searchEvents());
+  searchEvents();
+
+});
 
   // ================= INIT =================
   searchButton.addEventListener('click', searchEvents);
