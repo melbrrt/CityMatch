@@ -345,8 +345,3 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
-  // ================= INIT =================
-  searchButton.addEventListener('click', searchEvents);
-  searchInput.addEventListener('keydown', e => e.key === 'Enter' && searchEvents());
-  searchEvents();
-});
