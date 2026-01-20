@@ -26,6 +26,24 @@ OUTPUT_CSV = "data/csv_fusionne.csv"
 GEO_CACHE_FILE = "geo_cache.json"
 
 # =====================================================
+# METHODOLOGICAL NOTE – DATA COLLECTION STRATEGY
+# =====================================================
+#
+# This script implements an iterative and quota-constrained data
+# collection strategy using the SerpApi Google Events engine.
+#
+# An initial exploratory phase was conducted to identify the cities
+# and event categories that appear most frequently in Google Events
+# results. Based on these preliminary tests, a restricted subset of
+# cities and event types was selected for each collection period.
+#
+# Due to API quota limitations, data collection is performed
+# progressively over time. The list of queried cities and event
+# categories is updated periodically 
+
+
+
+# =====================================================
 # DATA
 # =====================================================
 
