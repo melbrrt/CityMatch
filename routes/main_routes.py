@@ -10,14 +10,14 @@ import re
 
 
 # =================================================
-# LOAD DATA ONCE (CACHE GLOBAL)
+# LOAD DATA ONCE (GLOBAL CACHE)
 # =================================================
 
 EVENTS_DF = load_events()
 
 
 # =================================================
-# NORMALIZATION 
+# CATEGORY NORMALIZATION
 # =================================================
 
 CATEGORY_TRANSLATIONS = {
@@ -98,10 +98,14 @@ bp = Blueprint("main", __name__)
 
 
 # =================================================
-# FILTRES COMMUNS
+# COMMON FILTERS
 # =================================================
 
 def apply_filters(df, args):
+    """
+    Apply all user filters.
+    Date filtering is entirely based on DateTime_start.
+    """
     df = df.copy()
 
     interests = args.get("interests", "")
@@ -112,13 +116,13 @@ def apply_filters(df, args):
     end_date = args.get("end_date", "")
 
     # -----------------------------
-    # Weighted interests
+    # Category / interests
     # -----------------------------
     if interests:
         df = filter_by_category(df, interests)
 
     # -----------------------------
-    # City
+    # City filter
     # -----------------------------
     if city and "City" in df.columns:
         df = df[
@@ -128,33 +132,31 @@ def apply_filters(df, args):
         ]
 
     # -----------------------------
-    # Multi-word free-text search
+    # Free-text search
     # -----------------------------
     if query:
         keywords = [k for k in query.split() if len(k) > 1]
 
         def keyword_score(row):
             text = normalize_text(
-                f"{row.get('EventName','')} {row.get('Description','')}"
+                f"{row.get('EventName', '')} {row.get('Description', '')}"
             )
-
             matches = sum(1 for k in keywords if k in text)
 
             if matches == 0:
                 return 0
-
             if matches == len(keywords):
                 return matches + 2
-
             return matches
 
         df["_query_score"] = df.apply(keyword_score, axis=1)
         df = df[df["_query_score"] > 0]
 
     # -----------------------------
-    # Dates
+    # Date filter
     # -----------------------------
-    df = filter_by_date(df, start_date, end_date)
+    if "DateTime_start" in df.columns:
+        df = filter_by_date(df, start_date, end_date)
 
     return df
 
@@ -203,25 +205,38 @@ def smart_search():
         df.loc[mask, "Source"] = "Billetterie disponible sur Ticketmaster"
 
     # -----------------------------
-    # Final ranking (relevance)
+    # Ranking
     # -----------------------------
     sort_cols = []
-
     if "interest_score" in df.columns:
         sort_cols.append("interest_score")
-
     if "_query_score" in df.columns:
         sort_cols.append("_query_score")
 
     if sort_cols:
         df = df.sort_values(sort_cols, ascending=False)
 
+    # -----------------------------
+    # Explicit date sort
+    # -----------------------------
+    if request.args.get("sort") == "date" and "DateTime_start" in df.columns:
+        df = df.sort_values("DateTime_start", ascending=True)
+
+    # -----------------------------
+    # Category translation
+    # -----------------------------
     if "Category" in df.columns:
         df["Category"] = df["Category"].apply(translate_category_safe)
 
-    if request.args.get("sort") == "date":
-        df = df.sort_values("DateTime_start", ascending=True)
 
+    if "DateTime_start" in df.columns:
+        df["DateTime_start"] = df["DateTime_start"].dt.strftime(
+            "%Y-%m-%d %H:%M:%S"
+        )
+
+    # -----------------------------
+    # Final JSON cleanup
+    # -----------------------------
     df = df.head(500)
     df = df.astype(object)
     df = df.where(pd.notna(df), None)
@@ -255,7 +270,6 @@ def cities_by_llm():
 
     for city, g in df.groupby("City"):
         covered = set()
-
         for interest in requested_interests:
             if g["_cat_norm"].str.contains(interest, na=False).any():
                 covered.add(interest)
@@ -274,4 +288,3 @@ def cities_by_llm():
     )
 
     return jsonify(city_df.to_dict(orient="records"))
-
