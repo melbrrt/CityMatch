@@ -70,8 +70,7 @@ def load_events() -> pd.DataFrame:
     if "DateTime_start" in df.columns:
         df["DateTime_start"] = (
             pd.to_datetime(
-                df["DateTime_start"],
-                format="mixed",     
+                df["DateTime_start"],    
                 dayfirst=True,
                 errors="coerce"
             )
@@ -84,7 +83,6 @@ def load_events() -> pd.DataFrame:
         df["DateTime_end"] = (
             pd.to_datetime(
                 df["DateTime_end"],
-                format="mixed",
                 dayfirst=True,
                 errors="coerce"
             )
