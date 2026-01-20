@@ -8,8 +8,9 @@ import os
 # =================================================
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-CSV_PATH = os.path.join(BASE_DIR, "..", "data", "csv_fusionne.csv")
-
+CSV_PATH = os.path.abspath(
+    os.path.join(BASE_DIR, "..", "data", "csv_fusionne.csv")
+)
 
 # =================================================
 # TEXT NORMALIZATION
@@ -29,69 +30,76 @@ def normalize_text(value) -> str:
 
 
 # =================================================
-# PARSING 
-# =================================================
-
-def parse_start_from_datetime(text):
-    if not isinstance(text, str) or not text.strip():
-        return pd.NaT
-
-    parts = re.split(r"[–\-—to]+", text)
-    try:
-        return pd.to_datetime(parts[0], errors="coerce", dayfirst=True)
-    except Exception:
-        return pd.NaT
-
-
-# =================================================
-# LOAD EVENTS
+# LOAD EVENTS (ROBUST & SAFE)
 # =================================================
 
 def load_events() -> pd.DataFrame:
-    print(" CSV utilisé :", CSV_PATH)
-    print(" Fichier existe ?", os.path.exists(CSV_PATH))
+    print("CSV utilisé :", CSV_PATH)
+    print("Fichier existe ?", os.path.exists(CSV_PATH))
 
     if not os.path.exists(CSV_PATH):
-        print(" CSV introuvable")
+        print("CSV introuvable")
         return pd.DataFrame()
 
     try:
-        df = pd.read_csv(CSV_PATH)
+        df = pd.read_csv(
+            CSV_PATH,
+            sep=";",
+            engine="python",       
+            encoding="utf-8",
+            on_bad_lines="skip"    
+        )
     except Exception as e:
-        print(" Erreur lecture CSV :", e)
+        print("Erreur lecture CSV :", e)
         return pd.DataFrame()
 
+    # Colonnes minimales attendues
     required_columns = ["Category", "City", "EventName", "Description"]
     if not all(col in df.columns for col in required_columns):
-        print(" Colonnes requises manquantes")
+        print("Colonnes requises manquantes :", df.columns.tolist())
         return pd.DataFrame()
 
+    # Coordonnées
     df["lat"] = pd.to_numeric(df.get("lat"), errors="coerce")
     df["lon"] = pd.to_numeric(df.get("lon"), errors="coerce")
 
-    df["DateTime_start"] = df["DateTime"].apply(parse_start_from_datetime)
+    # =================================================
+    # PARSING DES DATES — JOURNÉE SEULE (SANS HEURE)
+    # =================================================
+
+    if "DateTime_start" in df.columns:
+        df["DateTime_start"] = (
+            pd.to_datetime(
+                df["DateTime_start"],
+                format="mixed",     
+                dayfirst=True,
+                errors="coerce"
+            )
+            .dt.normalize()        
+        )
+    else:
+        df["DateTime_start"] = pd.NaT
 
     if "DateTime_end" in df.columns:
-        mask = df["DateTime_start"].isna() & df["DateTime_end"].notna()
-        df.loc[mask, "DateTime_start"] = pd.to_datetime(
-            df.loc[mask, "DateTime_end"], errors="coerce"
+        df["DateTime_end"] = (
+            pd.to_datetime(
+                df["DateTime_end"],
+                format="mixed",
+                dayfirst=True,
+                errors="coerce"
+            )
+            .dt.normalize()
         )
+    else:
+        df["DateTime_end"] = pd.NaT
 
-    def fallback_year(row):
-        year = row.get("Année_start") or row.get("Annee_start")
-        if pd.notna(year):
-            try:
-                return pd.Timestamp(year=int(year), month=1, day=1)
-            except Exception:
-                return pd.NaT
-        return pd.NaT
-
-    df["DateTime_start"] = df["DateTime_start"].fillna(
-        df.apply(fallback_year, axis=1)
-    )
-
+    # Sécurité texte
     for col in ["Category", "City", "EventName", "Description"]:
         df[col] = df[col].fillna("").astype(str)
+
+    print("Lignes chargées :", len(df))
+    print("Colonnes :", df.columns.tolist())
+    print("Type DateTime_start :", df["DateTime_start"].dtype)
 
     return df
 
@@ -130,30 +138,41 @@ def filter_by_category(df: pd.DataFrame, interests_param: str) -> pd.DataFrame:
 
 
 # =================================================
-# FILTER BY DATE
+# FILTER BY DATE 
 # =================================================
 
 def filter_by_date(df: pd.DataFrame, start=None, end=None) -> pd.DataFrame:
     """
-    Filtre uniquement selon les paramètres utilisateur (start / end).
-    Les événements passés sont CONSERVÉS.
+    Filtre selon DateTime_start.
+    - Par défaut : exclut les événements passés
+    - Si start/end sont fournis : respecte le filtre utilisateur
     """
 
     if df.empty or "DateTime_start" not in df.columns:
         return df
 
-    if start:
-        try:
-            start = pd.to_datetime(start)
+    df = df.copy()
+
+
+    df["DateTime_start"] = pd.to_datetime(
+        df["DateTime_start"], errors="coerce"
+    )
+
+    today = pd.Timestamp.now().normalize()
+
+
+    if not start:
+        df = df[df["DateTime_start"] >= today]
+    else:
+        start = pd.to_datetime(start, errors="coerce")
+        if pd.notna(start):
             df = df[df["DateTime_start"] >= start]
-        except Exception:
-            pass
+
 
     if end:
-        try:
-            end = pd.to_datetime(end)
+        end = pd.to_datetime(end, errors="coerce")
+        if pd.notna(end):
             df = df[df["DateTime_start"] <= end]
-        except Exception:
-            pass
 
     return df
+
