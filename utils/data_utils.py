@@ -175,4 +175,3 @@ def filter_by_date(df: pd.DataFrame, start=None, end=None) -> pd.DataFrame:
             df = df[df["DateTime_start"] <= end]
 
     return df
-
