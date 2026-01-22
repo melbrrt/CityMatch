@@ -256,11 +256,15 @@ def cities_by_llm():
     df = df[df["City"] != ""]
 
     interests_param = request.args.get("interests", "")
-    requested_interests = {
-        part.split(":")[0]
-        for part in interests_param.split(",")
-        if ":" in part
-    }
+    requested_interests = {}
+    for part in interests_param.split(","):
+        if ":" in part:
+            name, weight = part.split(":", 1)
+            try:
+                requested_interests[name] = int(weight)
+            except ValueError:
+                requested_interests[name] = 1
+
 
     df["_cat_norm"] = df["Category"].apply(
         lambda x: normalize_text(x) if isinstance(x, str) else ""
@@ -269,16 +273,16 @@ def cities_by_llm():
     rows = []
 
     for city, g in df.groupby("City"):
-        covered = set()
-        for interest in requested_interests:
+        score = 0
+        for interest, weight in requested_interests.items():
             if g["_cat_norm"].str.contains(interest, na=False).any():
-                covered.add(interest)
+                score += weight
+                rows.append({
+                    "City": city,
+                    "count": len(g),
+                    "coverage_score": score
+                })
 
-        rows.append({
-            "City": city,
-            "count": len(g),
-            "coverage_score": len(covered)
-        })
 
     city_df = pd.DataFrame(rows)
 
