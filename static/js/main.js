@@ -304,39 +304,34 @@ document.addEventListener('DOMContentLoaded', () => {
   // ================= CITIES =================
   function renderCities(cities) {
     cityResultsContainer.innerHTML = '';
-
-    if (!cities.length) {
-      cityResultsContainer.innerHTML = '<div class="small">-</div>';
-      return;
-    }
-
+    const seen = new Set();
     cities.slice(0, 8).forEach(c => {
+      if (seen.has(c.City)) return;
+      seen.add(c.City);
       const div = document.createElement('div');
       div.className = 'city-pill';
-
-      if (selectedCity === c.City) div.classList.add('active');
-
+      if (selectedCity === c.City) {
+        div.classList.add('active');
+      }
       div.innerHTML = `
-        <span>${c.City}</span>
-        <span class="small">${c.count}</span>
+      <span>${c.City}</span>
+      <span class="small">${c.count}</span>
       `;
-
       div.addEventListener('click', () => {
         selectedCity = c.City;
-
         document.querySelectorAll('.city-pill').forEach(p =>
           p.classList.remove('active')
         );
         div.classList.add('active');
-
+        
         renderWhyCity(c.City);
         currentPage = 1;
         renderPaginatedEvents(getVisibleEvents());
       });
-
       cityResultsContainer.appendChild(div);
     });
   }
+
 
   // ================= INIT =================
   searchButton.addEventListener('click', searchEvents);
